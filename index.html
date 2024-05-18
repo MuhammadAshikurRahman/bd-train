@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+<!-- DEVELOPER IS ASHIKUR RAHMAN -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Booking</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], select, .datepicker {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #trainData {
+            position: relative;
+            overflow: hidden;
+            margin-top: 30px;
+            width: 100%;
+            height: 900px;
+        }
+        #trainIframe {
+            position: absolute;
+            top: -70px;
+            width: 100%;
+            height: 100%; /* Adjust height as needed */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            
+        }
+      
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Check Train and Train Seats</h1>
+        <form id="searchForm">
+            <div class="form-group">
+                <label for="from">From:</label>
+                <input type="text" id="from" name="from" required>
+            </div>
+            <div class="form-group">
+                <label for="to">To:</label>
+                <input type="text" id="to" name="to" required>
+            </div>
+            <div class="form-group">
+                <label for="date">Date of Journey:</label>
+                <input type="text" id="date" name="date" class="datepicker" placeholder="Pick a date" required readonly>
+            </div>
+            <div class="form-group">
+                <label for="class">Choose Class:</label>
+                <select id="class" name="class" required>
+                    <option value="AC_B">AC_B</option>
+                    <option value="AC_S">AC_S</option>
+                    <option value="SNIGDHA">SNIGDHA</option>
+                    <option value="F_BERTH">F_BERTH</option>
+                    <option value="F_SEAT">F_SEAT</option>
+                    <option value="F_CHAIR">F_CHAIR</option>
+                    <option value="S_CHAIR">S_CHAIR</option>
+                    <option value="SHOVAN">SHOVAN</option>
+                    <option value="SHULOV">SHULOV</option>
+                    <option value="AC_CHAIR">AC_CHAIR</option>
+                </select>
+            </div>
+            <button type="submit">Search Train</button>
+        </form>
+        <div id="trainData">
+            <iframe id="trainIframe" src="" frameborder="0" ></iframe>
+           
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+        $(function() {
+            $(".datepicker").datepicker({
+                dateFormat: "dd-M-yy"
+            });
+
+            $('#searchForm').on('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+                
+                const from = $('#from').val();
+                const to = $('#to').val();
+                const date = $('#date').val();
+                const trainClass = $('#class').val();
+
+                // Ensure the date is formatted as dd-MMM-yyyy
+                const dateObj = new Date(date);
+                const day = String(dateObj.getDate()).padStart(2, '0');
+                const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                const month = monthNames[dateObj.getMonth()];
+                const year = dateObj.getFullYear();
+                const formattedDate = `${day}-${month}-${year}`;
+
+                // Construct the URL for scraping
+                const url = `https://eticket.railway.gov.bd/booking/train/search?fromcity=${from}&tocity=${to}&doj=${formattedDate}&class=${trainClass}`;
+                console.log("Fetching data from URL:", url); // Debug statement
+
+                // Load the URL in the iframe
+                $('#trainIframe').attr('src', url);
+            });
+        });
+    </script>
+</body>
+</html>
